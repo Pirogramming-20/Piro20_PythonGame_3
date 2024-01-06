@@ -1,8 +1,11 @@
 import random
 
 player_list = []
+player_name = ''
 
 def start():
+    global player_list
+    global player_name
     while(True):
         a = input('게임을 진행할까요? (y/n) : ')
         if a == 'y':
@@ -13,7 +16,6 @@ def start():
     player_name = input('오늘 거하게 취해볼 당신의 이름은? : ')
     player_life = 0
     invite_friend = 0
-    global player_list
 
     print('1. 소주 1잔')
     print('2. 소주 2잔')
@@ -76,6 +78,8 @@ def select_game():
             russian_roulette()
         elif select_num == 5:
             russian_roulette()
+        else:
+            print('다시 입력해주세요!')
 
         i += 1
 
@@ -83,16 +87,18 @@ def select_game():
 
 
 def russian_roulette():
-    joker = player_list[0]['player_name']
+    joker = player_list[random.randrange(0, len(player_list))]['player_name']
     player_list_length = len(player_list) - 1
 
-    if joker == 'p':
+    if joker == player_name:
         pointer = ''
         print('당신은 조커입니다! 조커가 원하는 타이밍에 멈추면\n그때, 지목자가 지목한 사람이 탈락합니다!')
         while(True):
             pointer = int(input(f'지목할 사람을 지정하세요 (1 ~ {player_list_length}): '))
             if 1 <= pointer <= player_list_length:
                 break
+            elif ValueError:
+                print('다시입력합시다!')
             else:
                 print('다시입력합시다!')
 
