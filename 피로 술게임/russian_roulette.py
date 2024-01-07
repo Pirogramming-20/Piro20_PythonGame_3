@@ -3,10 +3,16 @@ import random
 player_list = []
 player_name = ''
 
+# player_list는 전역변수로 만들어서 어떤 함수에서든 조작이 가능하도록 만듦
+# 그래서 모든 참여자가 게임을 선택해야 하는 조건때문에 player_list의 인덱스 수정은 어려움
+# player_list는 임의로
+# player_list = [{'player_name': '하연', 'player_life': 3, 'record': 0}, {'player_name': '은서', 'player_life': 4, 'record': 0} ...]
+# 와 같은 구성으로 되어 있음.
+
 def start():
     global player_list
     global player_name
-    while(True):
+    while True:
         a = input('게임을 진행할까요? (y/n) : ')
         if a == 'y':
             break
@@ -23,20 +29,26 @@ def start():
     print('4. 소주 4잔')
     print('5. 소주 5잔')
 
-    while(True):
-        player_life = int(input('당신의 치사량(주량)은 얼마만큼인가요? (1~5을 선택해주세요.) : '))
-        if player_life < 1 or player_life > 5:
+    while True:
+        try:
+            player_life = int(input('당신의 치사량(주량)은 얼마만큼인가요? (1~5을 선택해주세요.) : '))
+            if 1 <= player_life <= 5:
+                break
+            else:
+                print('숫자를 다시 입력해주세요!')
+        except ValueError:
             print('숫자를 다시 입력해주세요!')
-        else:
-            break
 
-    while(True):
-        invite_friend = int(input('함께 취할 친구들은 얼마나 필요하신가요? (사회적 거리두기로 인해 최대 3명까지 초대 할 수 있어요!) : '))
-        if 1 <= invite_friend <= 3:
-            break
-        else:
+    while True:
+        try:
+            invite_friend = int(input('함께 취할 친구들은 얼마나 필요하신가요? (사회적 거리두기로 인해 최대 3명까지 초대 할 수 있어요!) : '))
+            if 1 <= invite_friend <= 3:
+                break
+            else:
+                print('숫자를 다시 입력해주세요!')
+        except ValueError:
             print('숫자를 다시 입력해주세요!')
-    
+
     random_list = ['은서', '하연', '연서', '예진', '헌도']
     random.shuffle(random_list)
 
@@ -66,19 +78,22 @@ def select_game():
         print('4. 러시안룰렛 게임')
         print('5. 러시안룰렛 게임')
 
-        select_num = int(input(f'{player_list[i % len(player_list)]['player_name']}이(가) 좋아하는 랜덤 게임~ 랜덤 게임~ 무슨게임? : '))
-
-        if select_num == 1:
-            russian_roulette()
-        elif select_num == 2:
-            russian_roulette()
-        elif select_num == 3:
-            russian_roulette()
-        elif select_num == 4:
-            russian_roulette()
-        elif select_num == 5:
-            russian_roulette()
-        else:
+        
+        try:
+            select_num = int(input(f"{player_list[i % len(player_list)]['player_name']}이(가) 좋아하는 랜덤 게임~ 랜덤 게임~ 무슨게임? : "))
+            if select_num == 1:
+                russian_roulette()
+            elif select_num == 2:
+                russian_roulette()
+            elif select_num == 3:
+                russian_roulette()
+            elif select_num == 4:
+                russian_roulette()
+            elif select_num == 5:
+                russian_roulette()
+            else:
+                print('다시 입력해주세요!')
+        except ValueError:
             print('다시 입력해주세요!')
 
         i += 1
@@ -94,30 +109,34 @@ def russian_roulette():
         pointer = ''
         print('당신은 조커입니다! 조커가 원하는 타이밍에 멈추면\n그때, 지목자가 지목한 사람이 탈락합니다!')
         while(True):
-            pointer = int(input(f'지목할 사람을 지정하세요 (1 ~ {player_list_length}): '))
-            if 1 <= pointer <= player_list_length:
-                break
-            elif ValueError:
-                print('다시입력합시다!')
-            else:
+            try:
+                pointer = int(input(f'지목할 사람을 지정하세요 (1 ~ {player_list_length}): '))
+                if 1 <= pointer <= player_list_length:
+                    break
+                else:
+                    print('다시입력합시다!')
+            except:
                 print('다시입력합시다!')
 
         while(True):
                 computer_pointer = random.randrange(0, player_list_length + 1)
 
-                now = int(input(f'두근...두근...{player_list[pointer]['player_name']}(이)가 정한것 같다...지금 멈출까? ( 0 : 지금 멈춘다, 1 : 아니 지금 멈출 순 없다!) : '))
-                if now == 0 or now == 1:
-                    if now == 1:
-                        continue
+                try:
+                    now = int(input(f'두근...두근...{player_list[pointer]['player_name']}(이)가 정한것 같다...지금 멈출까? ( 0 : 지금 멈춘다, 1 : 아니 지금 멈출 순 없다!) : '))
+                    if now == 0 or now == 1:
+                        if now == 1:
+                            continue
+                        else:
+                            next_joker = player_list[computer_pointer]
+                            next_joker['player_life'] -=  1
+                            print(f'짠! {next_joker['player_name']}(이)가 걸렸다!')
+                            
+                            for i in player_list:
+                                print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
+                            break
                     else:
-                        next_joker = player_list[computer_pointer]
-                        next_joker['player_life'] -=  1
-                        print(f'짠! {next_joker['player_name']}(이)가 걸렸다!')
-                        
-                        for i in player_list:
-                            print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
-                        break
-                else:
+                        print('0 아니면 1만 선택하자!')
+                except:
                     print('0 아니면 1만 선택하자!')
     else:
         print(f'{player_list[0]['player_name']}님이 조커입니다.\n조커가 멈춘 순간, 지목자가 지목한 사람이 탈락합니다!')
@@ -126,18 +145,21 @@ def russian_roulette():
             print(f'{i}번 : {player_list[i]['player_name']}')
         
         while(True):
-            next_joker = int(input('지목자로 선정되셨습니다. 누구를 죽일지(?) 골라보세요. '))
-            if 0 <= next_joker <= player_list_length:
-                computer_pointer = random.randrange(1,4)
-                if computer_pointer == 1:
-                    print(f'조커가 멈췄습니다! {player_list[next_joker]['player_name']}님의 치사량이 "1" 줄어듦니다')
-                    player_list[next_joker]['player_life'] -= 1
-                    for i in player_list:
-                        print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
-                    break
+            try:
+                next_joker = int(input('지목자로 선정되셨습니다. 누구를 죽일지(?) 골라보세요. '))
+                if 0 <= next_joker <= player_list_length:
+                    computer_pointer = random.randrange(1,4)
+                    if computer_pointer == 1:
+                        print(f'조커가 멈췄습니다! {player_list[next_joker]['player_name']}님의 치사량이 "1" 줄어듦니다')
+                        player_list[next_joker]['player_life'] -= 1
+                        for i in player_list:
+                            print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
+                        break
+                    else:
+                        print('조커가 멈추지 않았습니다! 무섭네요 정말!')
                 else:
-                    print('조커가 멈추지 않았습니다! 무섭네요 정말!')
-            else:
+                    print('다시입력합시다!')
+            except:
                 print('다시입력합시다!')
 
 
