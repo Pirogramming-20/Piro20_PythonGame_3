@@ -10,21 +10,20 @@ names_list = [person['name'] for person in List]
 def good_game():
     goodAnswer = ['캌 퉤', '나도 좋아']
     print('우리 술도 마셨는데 좋아 게임할까?')
-    good_score = [0, 0, 0, 0, 0]  # 멤버별 거절당한 수
-    lastGame = True  # 지난 답변이 긍정
+    good_score = [0, 0, 0, 0, 0]
+    lastGame = True
     while True:
         game_out = False
         if lastGame:
             good_rand = random.randint(0, 4)
-            myTurn = List[good_rand]['name']  # 공격하는 사람
-        # 컴퓨터가 공격
+            myTurn = List[good_rand]['name']
         if myTurn != myName:
             while True:
                 while True:
-                    yourTurn = List[random.randint(0, 4)]['name']  # 공격받는 사람
+                    yourTurn = List[random.randint(0, 4)]['name']
                     if yourTurn != myTurn:
                         break
-                if yourTurn != myName:  # 컴 -> 컴
+                if yourTurn != myName:
                     print(myTurn, ':', yourTurn, '좋아')
                     myAnswer = goodAnswer[random.randint(0, 1)]
                     print('->', yourTurn, ':', myAnswer)
@@ -42,7 +41,6 @@ def good_game():
                         break
                     if game_out:
                         break
-                # 사용자가 공격받음
                 else:
                     while True:
                         print(myTurn, ':', yourTurn, '좋아')
@@ -65,8 +63,6 @@ def good_game():
                             break
                 if game_out:
                     break
-
-        # 내가 공격하는 사람
         else:
             while True:
                 print(myTurn, ':', end=' ')
