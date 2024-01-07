@@ -1,11 +1,11 @@
 import random
 import requests
 from bs4 import BeautifulSoup as bs
+from pyfiglet import Figlet
 
 player_list = []
 player_name = ''
 
-# from pyfiglet import Figlet
 # player_list는 전역변수로 만들어서 어떤 함수에서든 조작이 가능하도록 만듦
 # 그래서 모든 참여자가 게임을 선택해야 하는 조건때문에 player_list의 인덱스 수정은 어려움
 # player_list는 임의로
@@ -16,8 +16,8 @@ def start():
     global player_list
     global player_name
 
-    # game_title = Figlet(font='slant')
-    # print(game_title.renderText('Archol Game!\n    Lets go!'))
+    game_title = Figlet(font='slant')
+    print(game_title.renderText('Archol Game!\n    Lets go!'))
 
     while True:
         a = input('게임을 진행할까요? (y/n) : ')
@@ -220,8 +220,14 @@ def UpDownGame(playerName):
                 break
         if guess_order == titles.index(teamName)+1 or now < player_num:
             print ("정답을 맞췄다 ! 출제자 두 잔 !")
+            playerName['player_life'] -= 2
+            playerName['count'] += 2
         else:
-            print ("정답을 맞추지 못했다 ! 출제자 제외 한 잔 !")
+            print("정답을 맞추지 못했다 ! 출제자 제외 한 잔 !")
+            for i in player_list:
+                if i['player_name'] != playerName:
+                    i['player_life'] -= 1
+                    i['count'] += 1
     else:
         teamName = titles[random.randint(0,totalNum-1)]
         player_num = 4
@@ -258,8 +264,17 @@ def UpDownGame(playerName):
                     break
         if guess_order == titles.index(teamName)+1 or now < player_num:
             print ("정답을 맞췄다 ! 출제자 두 잔 !")
+            playerName['player_life'] -= 2
+            playerName['count'] += 2
         else:
             print ("정답을 맞추지 못했다 ! 출제자 제외 한 잔 !")
+            for i in player_list:
+                if i['player_name'] != playerName:
+                    i['player_life'] -= 1
+                    i['count'] += 1
+
+    for i in player_list:
+        print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
 
 def theGameOfDeath():
     # 숫자 부를 사람 랜덤으로 정하기
