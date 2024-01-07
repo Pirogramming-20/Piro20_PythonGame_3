@@ -361,13 +361,16 @@ def search_kimchi(kimchi_name):
 #       search_kimchi 에 전달하여 bool 값을 전달 받는다.
 #       있다면 게임오버, 없다면 다음차례로 넘어간다.
 def kimchi_game_start(vegetables, i):
+    game_title = Figlet(font='slant')
+    print(game_title.renderText('Gimchi Game!\n    Lets go!'))
     print("************************************************************")
     print("*                           RULE                           *")
     print("*    1. 만개의 레시피에 00 김치를 검색합니다.                    *")
     print("*    2. 00으로 만든, 혹은 00이 들어간 김치가 있는지 확인합니다.    *")
     print("*    3. 하나라도 있다면 패배, 없다면 다음 차례로 넘어갑니다.       *")
     print("*    4. 단 00 은 채소나 과일 이름이어야 합니다.                  *")
-    print("*    5. 게임은 부른 사람부터 순서대로 갑니다.                    *")
+    print("*    5. 다른 사람이 이미 말했던 채소나 과일은 제외해야합니다.       *")
+    print("*    6. 게임은 부른 사람부터 순서대로 갑니다.                    *")
     print("************************************************************")
     print("없을 것 같은 김치 재료를 하나 골라 '00 김치'를 입력해주세요! (ex : 브로콜리 김치!)")
     print("아 김치! 김치! 김치 게임 start!")
@@ -383,7 +386,7 @@ def kimchi_game_start(vegetables, i):
             print("%s : %s 김치" % (player_list[i]["player_name"], random_vegetable))
             if (random_vegetable not in used_answer):
                 used_answer.append(random_vegetable)
-                print("%s 🔍 김치 검색중....." % (random_vegetable))
+                print("🔍%s 김치 검색중....." % (random_vegetable))
                 if search_kimchi(random_vegetable):
                     print("🌶️🌶️%s 김치 있다!🌶️🌶️" % (random_vegetable))
                     print("🥃아 누가누가 술을 마셔 %s이가 술을 마셔 원~~~~ 샷!🥃" % (player_list[i]["player_name"]))
@@ -391,7 +394,7 @@ def kimchi_game_start(vegetables, i):
                     player_list[i]["count"] += 1 # 해당 순서 플레이어 카운트 증가
                     return
                 else:
-                    print("%s 👏👏김치 없어!👏👏" % (random_vegetable))
+                    print("👏👏%s 김치 없어!👏👏" % (random_vegetable))
                     i += 1  # 다음 차례로 이동
             else:
                 print("이미 누가 %s 김치 했어!" % (random_vegetable))
@@ -411,7 +414,7 @@ def kimchi_game_start(vegetables, i):
                         raise Exception('입력하지 않았습니다. ')
                     if (veg_name not in used_answer):
                         used_answer.append(veg_name)
-                        print("%s 🔍 김치 검색중....." % (veg_name))
+                        print("🔍%s 김치 검색중....." % (veg_name))
                         if search_kimchi(veg_name):
                             print("🌶️🌶️%s 김치 있다!🌶️🌶️" % (veg_name))
                             print("🥃아 누가누가 술을 마셔 %s이가 술을 마셔 원~~~~ 샷!🥃" % (player_list[0]['player_name']))
@@ -419,7 +422,7 @@ def kimchi_game_start(vegetables, i):
                             player_list[0]["count"] += 1 # 플레이어 카운트 증가
                             return
                         else:
-                            print("%s 👏👏김치 없어!👏👏" % (veg_name))
+                            print("👏👏%s 김치 없어!👏👏" % (veg_name))
                             i += 1  # 다음 차례로
                             break
                     else:
