@@ -60,11 +60,11 @@ def start():
 
     for i in range(invite_friend):
         life = random.randrange(1,6)
-        print(f'오늘 함께 취할 친구는 {random_list[i]}입니다! (치사량 : {life})')
+        print(f"오늘 함께 취할 친구는 {random_list[i]}입니다! (치사량 : {life})")
         player_list.append({'player_name' : random_list[i], 'player_life' : life, 'record' : 0})
     
     for i in player_list:
-        print(f'{i['player_name']}은(는) 지금까지 {i['record']} bill! 치사량까지 {i['player_life']}')
+        print(f"{i['player_name']}은(는) 지금까지 {i['record']} bill! 치사량까지 {i['player_life']}")
 
     
 
@@ -86,7 +86,7 @@ def select_game():
                 select_num = int(input(f"{player_list[i % len(player_list)]['player_name']}이(가) 좋아하는 랜덤 게임~ 랜덤 게임~ 무슨게임? : "))
             else:
                 select_num = random.randrange(1, 6)
-                print(f'{player_list[i % len(player_list)]['player_name']}이(가) {select_num}번을 선택했다!')
+                print(f"{player_list[i % len(player_list)]['player_name']}이(가) {select_num}번을 선택했다!")
             if select_num == 1:
                 russian_roulette()
             elif select_num == 2:
@@ -128,27 +128,27 @@ def russian_roulette():
                 computer_pointer = random.randrange(0, player_list_length + 1)
 
                 try:
-                    now = int(input(f'두근...두근...{player_list[pointer]['player_name']}(이)가 정한것 같다...지금 멈출까? ( 0 : 지금 멈춘다, 1 : 아니 지금 멈출 순 없다!) : '))
+                    now = int(input(f"두근...두근...{player_list[pointer]['player_name']}(이)가 정한것 같다...지금 멈출까? ( 0 : 지금 멈춘다, 1 : 아니 지금 멈출 순 없다!) : "))
                     if now == 0 or now == 1:
                         if now == 1:
                             continue
                         else:
                             next_joker = player_list[computer_pointer]
                             next_joker['player_life'] -=  1
-                            print(f'짠! {next_joker['player_name']}(이)가 걸렸다!')
+                            print(f"짠! {next_joker['player_name']}(이)가 걸렸다!")
                             
                             for i in player_list:
-                                print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
+                                print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다!")
                             break
                     else:
                         print('0 아니면 1만 선택하자!')
                 except:
                     print('0 아니면 1만 선택하자!')
     else:
-        print(f'{player_list[0]['player_name']}님이 조커입니다.\n조커가 멈춘 순간, 지목자가 지목한 사람이 탈락합니다!')
+        print(f"{player_list[0]['player_name']}님이 조커입니다.\n조커가 멈춘 순간, 지목자가 지목한 사람이 탈락합니다!")
 
         for i in range(player_list_length + 1):
-            print(f'{i}번 : {player_list[i]['player_name']}')
+            print(f"{i}번 : {player_list[i]['player_name']}")
         
         while(True):
             try:
@@ -156,10 +156,10 @@ def russian_roulette():
                 if 0 <= next_joker <= player_list_length:
                     computer_pointer = random.randrange(1,4)
                     if computer_pointer == 1:
-                        print(f'조커가 멈췄습니다! {player_list[next_joker]['player_name']}님의 치사량이 "1" 줄어듦니다')
+                        print(f"조커가 멈췄습니다! {player_list[next_joker]['player_name']}님의 치사량이 '1' 줄어듦니다")
                         player_list[next_joker]['player_life'] -= 1
                         for i in player_list:
-                            print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
+                            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다!")
                         break
                     else:
                         print('조커가 멈추지 않았습니다! 무섭네요 정말!')
@@ -205,13 +205,13 @@ def UpDownGame() :
     if guess_order == titles.index(title_answer)+1 or now < player_num:
         tester['player_life'] -= 1
         for i in player_list:
-            print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
+            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다!")
     else:
         for i in player_list:
             if i['player_name'] != tester['player_name']:
                 i['player_life'] -= 1
         for i in player_list:
-            print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
+            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다!")
         #나머지가 마신다
 
 
