@@ -1,6 +1,7 @@
 import random
 import requests
 from bs4 import BeautifulSoup as bs
+from pyfiglet import Figlet
 
 player_list = []
 player_name = ''
@@ -14,6 +15,10 @@ player_name = ''
 def start():
     global player_list
     global player_name
+
+    game_title = Figlet(font='slant')
+    print(game_title.renderText('Archol Game!\n    Lets go!'))
+
     while True:
         a = input('게임을 진행할까요? (y/n) : ')
         if a == 'y':
@@ -299,4 +304,6 @@ def theGameOfDeath():
 start()
 select_game()
 
-print('종료~')
+
+last_title = Figlet(font='slant')
+print(last_title.renderText('Game\n    over!'))
