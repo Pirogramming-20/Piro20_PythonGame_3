@@ -26,21 +26,24 @@ def good_game():
             #컴이 공격받음
             print(myTurn,':',yourTurn,'좋아!')
             if yourTurn!=myName:
-                myAnswer=goodAnswer[random.randint(0,1)]
-                print('->',yourTurn,':',myAnswer)
-                if myAnswer==goodAnswer[0]: #캌 퉤
-                    lastGame=False
-                    for i, member in enumerate(List):
-                        if member['name'] == yourTurn:
-                            good_score[i] += 1
-                            if good_score[i]==3:
-                                game_out=True
-                            break
-                    break
-                elif myAnswer==goodAnswer[1]:
-                    lastGame=True
-                    good_score=[0,0,0,0,0]
-
+                while True:
+                    myAnswer = goodAnswer[random.randint(0, 1)]
+                    print('->', yourTurn, ':', myAnswer)
+                    if myAnswer==goodAnswer[0]:
+                        lastGame=False
+                        for i, member in enumerate(List):
+                            if member['name'] == myTurn:
+                                good_score[i] += 1
+                                if good_score[i]==3:
+                                    game_out=True
+                                break
+                        continue
+                    elif myAnswer==goodAnswer[1]:
+                        lastGame = True
+                        good_score = [0, 0, 0, 0, 0]
+                        break
+                    if game_out:
+                        break
             #사용자가 공격받음
             else:
                 while True:
@@ -48,12 +51,12 @@ def good_game():
                     if myAnswer==goodAnswer[0]:
                         lastGame=False
                         for i, member in enumerate(List):
-                            if member['name'] == yourTurn:
+                            if member['name'] == myTurn:
                                 good_score[i] += 1
                                 if good_score[i]==3:
                                     game_out=True
                                 break
-                        break
+                        continue
                     elif myAnswer==goodAnswer[1]:
                         lastGame=True
                         good_score=[0,0,0,0,0]
@@ -61,31 +64,37 @@ def good_game():
                     else:
                         print("잘못된 대답입니다. '캌 퉤'와 '나도 좋아' 중에서 선택해주세요.")
                         continue
-            if game_out:
-                print('아 누가 술을 마셔 %s이(가) 술을 마셔'%List['name'][i])
-                break
         #내가 공격하는 사람
         else:
             while True:
-                print(myTurn,':')
+                print(myTurn,':',end=' ')
                 myAnswer=input()
                 yourTurn=''
                 for j in range(len(myAnswer)):
                     if myAnswer[j]==' ':
                         break
                     yourTurn+=myAnswer[j]
-                myAnswer = goodAnswer[random.randint(0, 1)]
-                print('->', yourTurn, ':', myAnswer)
-                if myAnswer == goodAnswer[0]:
-                    lastGame = False
-                    for i, member in enumerate(List):
-                        if member['name'] == yourTurn:
-                            good_score[i] += 1
-                            if good_score[i] == 3:
-                                game_out = True
-                            break
+                while True:
+                    myAnswer = goodAnswer[random.randint(0, 1)]
+                    print('->', yourTurn, ':', myAnswer)
+                    if myAnswer == goodAnswer[0]:
+                        lastGame = False
+                        for i, member in enumerate(List):
+                            if member['name'] == myTurn:
+                                good_score[i] += 1
+                                if good_score[i] == 3:
+                                    game_out = True
+                                break
+                        continue
+                    elif myAnswer == goodAnswer[1]:
+                        lastGame = True
+                        good_score = [0, 0, 0, 0, 0]
+                        break
+                    if game_out:
+                        break
+                if game_out:
                     break
         if game_out:
-            print('아 누가 술을 마셔 %s이(가) 술을 마셔'%List['name'][i])
+            print('아 누가 술을 마셔 %s이(가) 술을 마셔'%List[i]['name'])
             break
 good_game()
