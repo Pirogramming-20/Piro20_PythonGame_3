@@ -1,4 +1,6 @@
 import random
+import requests
+from bs4 import BeautifulSoup as bs
 
 player_list = []
 player_name = ''
@@ -73,18 +75,22 @@ def select_game():
     while not any(player['player_life'] == 0 for player in player_list):
         print('오늘의 알코올 게임')
         print('1. 러시안룰렛 게임')
-        print('2. 러시안룰렛 게임')
+        print('2. 업다운 게임')
         print('3. 러시안룰렛 게임')
         print('4. 러시안룰렛 게임')
         print('5. 러시안룰렛 게임')
 
         
         try:
-            select_num = int(input(f"{player_list[i % len(player_list)]['player_name']}이(가) 좋아하는 랜덤 게임~ 랜덤 게임~ 무슨게임? : "))
+            if i == (0 % 5):
+                select_num = int(input(f"{player_list[i % len(player_list)]['player_name']}이(가) 좋아하는 랜덤 게임~ 랜덤 게임~ 무슨게임? : "))
+            else:
+                select_num = random.randrange(1, 6)
+                print(f'{player_list[i % len(player_list)]['player_name']}이(가) {select_num}번을 선택했다!')
             if select_num == 1:
                 russian_roulette()
             elif select_num == 2:
-                russian_roulette()
+                UpDownGame()
             elif select_num == 3:
                 russian_roulette()
             elif select_num == 4:
@@ -161,6 +167,52 @@ def russian_roulette():
                     print('다시입력합시다!')
             except:
                 print('다시입력합시다!')
+
+def UpDownGame() :
+    tester = player_list[random.randrange(0, len(player_list))]
+    titles = []
+    url = "https://www.premierleague.com/tables"
+    response = requests.get(url)
+    soup = bs(response.text, "html.parser")
+    result = soup.select(".league-table__team-name.league-table__team-name--long.long")
+    print (f"23/24 시즌 1월 7일 기준 PL 순위를 맞춰보자 ! \n 출제자는 {tester['player_name']}입니다!")
+    for i in range(20):
+        titles.append(result[i].getText())
+    totalNum = 20
+    title_answer = titles[random.randint(0,totalNum-1)]
+    player_num = 4
+
+    now = 1
+    startPoint = 1
+    endPoint = 20
+    print (title_answer + "의 등수를 맞춰보자 !")
+    while now < player_num:
+        now = now +1
+        guess_order = random.randint(startPoint, endPoint)
+        print (startPoint, endPoint)
+        print ("예상하는 등수는?" + str(guess_order))
+        if (guess_order > titles.index(title_answer)+1):
+            print ("Up!")
+            endPoint = guess_order-1
+        elif guess_order < titles.index(title_answer)+1:
+            print ("Down!")
+            startPoint = guess_order+1
+        else:
+            print ("정답!")
+            break
+            
+
+    if guess_order == titles.index(title_answer)+1 or now < player_num:
+        tester['player_life'] -= 1
+        for i in player_list:
+            print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
+    else:
+        for i in player_list:
+            if i['player_name'] != tester['player_name']:
+                i['player_life'] -= 1
+        for i in player_list:
+            print(f'{i['player_name']}의 치사량까지 {i['player_life']} 남았다!')
+        #나머지가 마신다
 
 
 start()
