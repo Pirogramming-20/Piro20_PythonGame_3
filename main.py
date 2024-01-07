@@ -347,7 +347,7 @@ def search_kimchi(kimchi_name):
     for link in links:
         if link.text:
             title = link.text
-            if (kimchi_name + ' 김치') in title or (kimchi_name in title and '김치' in title):
+            if (kimchi_name + '김치') in title or (kimchi_name + '물김치')in title or (kimchi_name + '깍두기')in title:
                 print(url)
                 print(title)
                 return True
@@ -380,7 +380,7 @@ def kimchi_game_start(vegetables, i):
 
     while True:
 
-        if i % len(player_list):
+        if i % (len(player_list) + 1):
             # 컴퓨터 플레이어들의 차례
             random_vegetable = random.choice(vegetables)
             print("%s : %s 김치" % (player_list[i]["player_name"], random_vegetable))
