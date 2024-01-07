@@ -1,6 +1,7 @@
 import random
 import requests
 from bs4 import BeautifulSoup as bs
+from pyfiglet import Figlet
 
 player_list = []
 player_name = ''
@@ -15,6 +16,10 @@ player_name = ''
 def start():
     global player_list
     global player_name
+
+    game_title = Figlet(font='slant')
+    print(game_title.renderText('Archol Game!\n    Lets go!'))
+
     while True:
         a = input('게임을 진행할까요? (y/n) : ')
         if a == 'y':
@@ -331,23 +336,20 @@ def kimchi_game(i):
 # 기능 : 구글에 전달받은 재료로 만든 김치를 검색하고,
 #       검색 결과의 이미지에 alt 태그로 해당 김치가 있다면 True를 리턴한다.
 def search_kimchi(kimchi_name):
-    url = (f"https://www.google.com/search?q={kimchi_name} 김치")
+    url = (f"https://www.10000recipe.com/recipe/list.html?q={kimchi_name} 김치&order=accuracy")
     response = requests.get(url)
-    print(url)
     if response.status_code == 200:
         soup = (bs(response.text, "html.parser"))
-    # print("target_url = ",target_urls)
-    # print("soups[0] = ", soups[0].prettify())
-    links = []
-    links.extend(soup.find_all('img'))
 
-    # print(links)
+    links = []
+    links.extend(soup.find_all('div', class_="common_sp_caption_tit line2"))
 
     for link in links:
-        # 이미지 태그에서 alt 속성이 있는지 확인하고 특정 내용을 찾는다.
-        if 'alt' in link.attrs:
-            alt_content = link['alt']
-            if (kimchi_name + ' 김치') in alt_content or (kimchi_name in alt_content and '김치' in alt_content):
+        if link.text:
+            title = link.text
+            if (kimchi_name + ' 김치') in title or (kimchi_name in title and '김치' in title):
+                print(url)
+                print(title)
                 return True
 
 
@@ -361,7 +363,7 @@ def search_kimchi(kimchi_name):
 def kimchi_game_start(vegetables, i):
     print("************************************************************")
     print("*                           RULE                           *")
-    print("*    1. 구글에 00 김치를 검색합니다.                           *")
+    print("*    1. 만개의 레시피에 00 김치를 검색합니다.                    *")
     print("*    2. 00으로 만든, 혹은 00이 들어간 김치가 있는지 확인합니다.    *")
     print("*    3. 하나라도 있다면 패배, 없다면 다음 차례로 넘어갑니다.       *")
     print("*    4. 단 00 은 채소나 과일 이름이어야 합니다.                  *")
@@ -375,7 +377,7 @@ def kimchi_game_start(vegetables, i):
 
     while True:
 
-        if i % 5:
+        if i % len(player_list):
             # 컴퓨터 플레이어들의 차례
             random_vegetable = random.choice(vegetables)
             print("%s : %s 김치" % (player_list[i]["player_name"], random_vegetable))
@@ -442,4 +444,5 @@ def kimchi_game_start(vegetables, i):
 start()
 select_game()
 
-print('종료~')
+last_title = Figlet(font='slant')
+print(last_title.renderText('Game\n    over!'))
