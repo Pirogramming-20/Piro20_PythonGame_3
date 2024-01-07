@@ -90,3 +90,5 @@ def UpDownGame(playerName) :
 
 
 UpDownGame("Players")
+
+#player_num, player_turn, player이름만 적절히 변경해주면 될 듯 !
