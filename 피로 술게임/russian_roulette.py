@@ -8,7 +8,7 @@ player_name = ''
 # player_list는 전역변수로 만들어서 어떤 함수에서든 조작이 가능하도록 만듦
 # 그래서 모든 참여자가 게임을 선택해야 하는 조건때문에 player_list의 인덱스 수정은 어려움
 # player_list는 임의로
-# player_list = [{'player_name': '하연', 'player_life': 3, 'record': 0}, {'player_name': '은서', 'player_life': 4, 'record': 0} ...]
+# player_list = [{'player_name': '하연', 'player_life': 3, 'count': 0}, {'player_name': '은서', 'player_life': 4, 'count': 0} ...]
 # 와 같은 구성으로 되어 있음.
 
 def start():
@@ -25,11 +25,13 @@ def start():
     player_life = 0
     invite_friend = 0
 
+    print('~~~~~~~~~~~~~~~🍺소주 기준 당신의 주량은?🍺~~~~~~~~~~~~~~~')
     print('1. 소주 1잔')
     print('2. 소주 2잔')
     print('3. 소주 3잔')
     print('4. 소주 4잔')
     print('5. 소주 5잔')
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
     while True:
         try:
@@ -55,17 +57,22 @@ def start():
     random.shuffle(random_list)
 
     player_list = [
-        {'player_name' : player_name, 'player_life' : player_life, 'record' : 0},
+        {'player_name' : player_name, 'player_life' : player_life, 'count' : 0},
     ]
+
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
     for i in range(invite_friend):
         life = random.randrange(1,6)
         print(f"오늘 함께 취할 친구는 {random_list[i]}입니다! (치사량 : {life})")
-        player_list.append({'player_name' : random_list[i], 'player_life' : life, 'record' : 0})
+        player_list.append({'player_name' : random_list[i], 'player_life' : life, 'count' : 0})
     
-    for i in player_list:
-        print(f"{i['player_name']}은(는) 지금까지 {i['record']} bill! 치사량까지 {i['player_life']}")
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
+    for i in player_list:
+        print(f"{i['player_name']}은(는) 지금까지 {i['count']} 🍺 치사량까지 {i['player_life']}")
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     
 
 def select_game():
@@ -73,12 +80,13 @@ def select_game():
     i = 0
 
     while not any(player['player_life'] == 0 for player in player_list):
-        print('오늘의 알코올 게임')
-        print('1. 러시안룰렛 게임')
-        print('2. 업다운 게임')
-        print('3. 러시안룰렛 게임')
-        print('4. 러시안룰렛 게임')
-        print('5. 러시안룰렛 게임')
+        print('~~~~~~~~~~~~~~~~~~~~오늘의 알코올 게임~~~~~~~~~~~~~~~~~~~~')
+        print('🍺 1. 러시안룰렛 게임')
+        print('🍺 2. 업다운 게임')
+        print('🍺 3. 더 게임 오브 데스 게임')
+        print('🍺 4. 러시안룰렛 게임')
+        print('🍺 5. 러시안룰렛 게임')
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
         
         try:
@@ -92,7 +100,7 @@ def select_game():
             elif select_num == 2:
                 UpDownGame()
             elif select_num == 3:
-                russian_roulette()
+                theGameOfDeath()
             elif select_num == 4:
                 russian_roulette()
             elif select_num == 5:
@@ -135,10 +143,11 @@ def russian_roulette():
                         else:
                             next_joker = player_list[computer_pointer]
                             next_joker['player_life'] -=  1
+                            next_joker['count'] +=  1
                             print(f"짠! {next_joker['player_name']}(이)가 걸렸다!")
                             
                             for i in player_list:
-                                print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다!")
+                                print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
                             break
                     else:
                         print('0 아니면 1만 선택하자!')
@@ -158,8 +167,9 @@ def russian_roulette():
                     if computer_pointer == 1:
                         print(f"조커가 멈췄습니다! {player_list[next_joker]['player_name']}님의 치사량이 '1' 줄어듦니다")
                         player_list[next_joker]['player_life'] -= 1
+                        player_list[next_joker]['count'] += 1
                         for i in player_list:
-                            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다!")
+                            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
                         break
                     else:
                         print('조커가 멈추지 않았습니다! 무섭네요 정말!')
@@ -204,15 +214,86 @@ def UpDownGame() :
 
     if guess_order == titles.index(title_answer)+1 or now < player_num:
         tester['player_life'] -= 1
+        tester['count'] += 1
         for i in player_list:
-            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다!")
+            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
     else:
         for i in player_list:
             if i['player_name'] != tester['player_name']:
                 i['player_life'] -= 1
+                i['count'] += 1
         for i in player_list:
-            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다!")
+            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
         #나머지가 마신다
+
+def theGameOfDeath():
+
+    # 숫자 부를 사람 랜덤으로 정하기
+    starter = random.randrange(0, len(player_list))
+    player_list_length=len(player_list)
+
+    # 각자 한 명 지목하기
+    print("더!!!! 게임 오브 데쓰!!!!!")
+
+    player_choice=[]
+
+    for index, element in enumerate(player_list):
+            if element['player_name']==player_name:
+                print("=====지목리스트=====")
+                for i in range(player_list_length):
+                    print(f"  {i+1}번: {player_list[i]['player_name']}")
+                while True:
+                    try:
+                        choice = int(input('지목할 사람(위의 리스트 참고): '))
+                        if 1 <= choice<=player_list_length :
+                            player_choice.append(choice-1)
+                            print(f"당신 --> {player_list[choice-1]['player_name']}")
+                            break
+                        else:
+                            print('리스트에 있는 숫자를 입력하세요.')
+                    except ValueError:
+                        print('숫자를 입력하세요')
+            else:
+                while True:
+                    choice = random.randrange(0, player_list_length)
+                    if choice != index:
+                        player_choice.append(choice)
+                        print(f"{element['player_name']} --> {player_list[player_choice[index]]['player_name']}")
+                        break
+
+
+    #총 쏘는 횟수 정하기
+    if player_list[starter]['player_name']==player_name:
+        while True:
+                    try:
+                        choice = int(input('총을 몇 번 쏠까요: (30번 이하)'))
+                        if 1 <= choice<=30 :
+                            break
+                        else:
+                            print('0보다 크고 30보다 작은 수를 입력하세요.')
+                    except:
+                        print('숫자를 입력하세요: ')
+    else:
+        choice= random.randrange(1,30)
+        print(f"{player_list[starter]['player_name']}로부터 {choice} 번 쏩니다.🔫🔫🔫")
+
+    #게임 진행 및 총 쏘는 것 프린트
+    tern=starter
+    for i in range(choice):
+         print(f"{i+1}번: {player_list[tern]['player_name']}==>{player_list[player_choice[tern]]['player_name']}")
+         tern=player_choice[tern]
+
+    #결과 출력    
+    print(f"{player_list[tern]['player_name']}이(가) 한 잔 마셔")
+
+    #마시는 것 처리
+    player_list[tern]['player_life']-=1
+    player_list[tern]['count']+=1
+
+    print(f"{player_list[tern]['player_name']}는 {player_list[tern]['player_life']}잔 남았따")
+
+    for i in player_list:
+        print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
 
 
 start()
