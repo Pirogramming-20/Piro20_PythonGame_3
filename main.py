@@ -534,16 +534,23 @@ def search_food(food_name):
     if response.status_code == 200:
         soup = (bs(response.text, "html.parser"))
 
-    links = []
-    links.extend(soup.find_all('div', class_="common_sp_caption_tit line2"))
+    titles = []
+    titles.extend(soup.find_all('div', class_="common_sp_caption_tit line2"))
 
-    for link in links:
-        if link.text:
-            title = link.text
-            if ("백종원" + food_name) in title or ('백종원' in title and food_name in title):
-                print(url)
-                print(title)
+    links = []
+    links.extend(soup.find_all('a', class_="common_sp_link"))
+
+    i = 0
+
+    for title in titles:
+        if title.text:
+            titlename = title.text
+            link_url = "https://www.10000recipe.com/" + links[i].get('href')
+            if ("백종원" + food_name) in titlename or ('백종원' in titlename and food_name in titlename):
+                print(link_url)
+                print(titlename)
                 return True
+        i += 1
 
 
 # 함수명 :  baedck_game_start(foods, i)
