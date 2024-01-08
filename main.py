@@ -89,7 +89,7 @@ def select_game():
         print('🍺 1. 러시안룰렛 게임')
         print('🍺 2. 업다운 게임')
         print('🍺 3. 더 게임 오브 데스 게임')
-        print('🍺 4. 러시안룰렛 게임')
+        print('🍺 4. 좋아 게임')
         print('🍺 5. 김치 게임')
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
@@ -107,7 +107,7 @@ def select_game():
             elif select_num == 3:
                 theGameOfDeath()
             elif select_num == 4:
-                russian_roulette()
+                good_game()
             elif select_num == 5:
                 kimchi_game(i)
             else:
@@ -408,7 +408,7 @@ def search_kimchi(kimchi_name):
     for link in links:
         if link.text:
             title = link.text
-            if (kimchi_name + ' 김치') in title or (kimchi_name in title and '김치' in title):
+            if (kimchi_name + '김치') in title or (kimchi_name + '물김치')in title or (kimchi_name + '깍두기')in title:
                 print(url)
                 print(title)
                 return True
@@ -503,6 +503,114 @@ def kimchi_game_start(vegetables, i):
                         player_list[0]["player_life"] -= 1  # 플레이어 목숨 하나 제거
                         player_list[0]["count"] += 1  # 플레이어 카운트 증가
                         return
+
+
+
+def good_game():
+    good_title = Figlet(font='slant')
+    print(good_title.renderText('Like\n    Game!'))
+    names_list = [person['player_name'] for person in player_list]
+    goodAnswer = ['캌 퉤', '나도 좋아']
+    print('우리 술도 마셨는데 좋아 게임할까?')
+    good_score = [0, 0, 0, 0, 0]
+    lastGame = True
+    while True:
+        game_out = False
+        if lastGame:
+            good_rand = random.randint(0, len(player_list) - 1)
+            myTurn = player_list[good_rand]['player_name']
+        if myTurn != player_name:
+            while True:
+                while True:
+                    yourTurn = player_list[random.randint(0, len(player_list) - 1)]['player_name']
+                    if yourTurn != myTurn:
+                        break
+                if yourTurn != player_name:
+                    print(myTurn, ':', yourTurn, '좋아')
+                    myAnswer = goodAnswer[random.randint(0, 1)]
+                    print('->', yourTurn, ':', myAnswer)
+                    if myAnswer == goodAnswer[0]:
+                        lastGame = False
+                        for i, member in enumerate(player_list):
+                            if member['player_name'] == myTurn:
+                                good_score[i] += 1
+                                if good_score[i] == 3:
+                                    game_out = True
+                                break
+                    elif myAnswer == goodAnswer[1]:
+                        lastGame = True
+                        good_score = [0, 0, 0, 0, 0]
+                        break
+                    if game_out:
+                        break
+                else:
+                    while True:
+                        print(myTurn, ':', yourTurn, '좋아')
+                        myAnswer = input(f'->{yourTurn}: ')
+                        if myAnswer == goodAnswer[0]:
+                            lastGame = False
+                            for i, member in enumerate(player_list):
+                                if member['player_name'] == myTurn:
+                                    good_score[i] += 1
+                                    if good_score[i] == 3:
+                                        game_out = True
+                                    break
+                        elif myAnswer == goodAnswer[1]:
+                            lastGame = True
+                            good_score = [0, 0, 0, 0, 0]
+                            break
+                        else:
+                            print("잘못된 대답입니다. '캌 퉤'와 '나도 좋아' 중에서 선택해주세요.")
+                        if game_out:
+                            break
+                if game_out:
+                    break
+        else:
+            while True:
+                print(myTurn, ':', end=' ')
+                myAnswer = input()
+                yourTurn = ''
+                for j in range(len(myAnswer)):
+                    if myAnswer[j] == ' ':
+                        break
+                    yourTurn += myAnswer[j]
+                if myAnswer!=yourTurn+' 좋아':
+                    print("'OO 좋아'의 형태로 다시 작성하세요")
+                    continue
+                if yourTurn not in names_list:
+                    print('리스트에 없는 이름입니다')
+                    print(' '.join(names_list), '중 다시 입력해주세요')
+                    continue
+                elif yourTurn==player_name:
+                    print('본인은 선택할 수 없습니다 다시 입력해주세요')
+                    break
+                myAnswer = goodAnswer[random.randint(0, 1)]
+                print('->', yourTurn, ':', myAnswer)
+                if myAnswer == goodAnswer[0]:
+                    lastGame = False
+                    for i, member in enumerate(player_list):
+                        if member['player_name'] == myTurn:
+                            good_score[i] += 1
+                            if good_score[i] == 3:
+                                game_out = True
+                            break
+                elif myAnswer == goodAnswer[1]:
+                    lastGame = True
+                    good_score = [0, 0, 0, 0, 0]
+                    break
+                if game_out:
+                    break
+        if game_out:
+            print(f"{player_list[i]['player_name']}이(가) 한 잔 마셔")
+            break
+
+    player_list[i]['player_life'] -= 1
+    player_list[i]['count'] += 1
+
+    print(f"{player_list[i]['player_name']}는 {player_list[i]['player_life']}잔 남았따")
+
+    for i in player_list:
+        print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
 
 
 start()
