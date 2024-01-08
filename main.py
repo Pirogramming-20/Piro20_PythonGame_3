@@ -85,17 +85,17 @@ def select_game():
     global player_list
     i = 0
 
-    while not any(player['player_life'] == 0 for player in player_list):
+    while not any(player['player_life'] <= 0 for player in player_list):
         print('~~~~~~~~~~~~~~~~~~~~오늘의 알코올 게임~~~~~~~~~~~~~~~~~~~~')
         print('🍺 1. 러시안룰렛 게임')
         print('🍺 2. 업다운 게임')
         print('🍺 3. 더 게임 오브 데스 게임')
-        print('🍺 4. 러시안룰렛 게임')
-        print('🍺 5. 김치 게임')
+        print('🍺 4. 좋아 게임')
+        print('🍺 5. 백종원 게임')
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
         try:
-            if i == (0 % 5):
+            if i == (0 % (len(player_list) + 1)):
                 select_num = int(
                     input(f"{player_list[i % len(player_list)]['player_name']}이(가) 좋아하는 랜덤 게임~ 랜덤 게임~ 무슨게임? : "))
             else:
@@ -104,11 +104,11 @@ def select_game():
             if select_num == 1:
                 russian_roulette()
             elif select_num == 2:
-                UpDownGame()
+                UpDownGame(player_list[i % len(player_list)]['player_name'])
             elif select_num == 3:
                 theGameOfDeath()
             elif select_num == 4:
-                russian_roulette()
+                good_game()
             elif select_num == 5:
                 baeck_game(i)
             else:
@@ -116,10 +116,13 @@ def select_game():
                 continue
         except ValueError:
             print('다시 입력해주세요!')
-            i += 1
+
+        i += 1
 
 
 def russian_roulette():
+    game_title = Figlet(font='slant')
+    print(game_title.renderText('russian\n    roulette!'))
     joker = player_list[random.randrange(0, len(player_list))]['player_name']
     player_list_length = len(player_list) - 1
 
@@ -159,15 +162,15 @@ def russian_roulette():
             except:
                 print('0 아니면 1만 선택하자!')
     else:
-        print(f"{player_list[0]['player_name']}님이 조커입니다.\n조커가 멈춘 순간, 지목자가 지목한 사람이 탈락합니다!")
+        print(f"{player_list[random.randrange(1, len(player_list))]['player_name']}님이 조커입니다.\n조커가 멈춘 순간, 지목자가 지목한 사람이 탈락합니다!")
 
         for i in range(player_list_length + 1):
-            print(f"{i}번 : {player_list[i]['player_name']}")
+            print(f"{ i+ 1 }번 : {player_list[i]['player_name']}")
 
         while (True):
             try:
                 next_joker = int(input('지목자로 선정되셨습니다. 누구를 죽일지(?) 골라보세요. '))
-                if 0 <= next_joker <= player_list_length:
+                if 1 <= next_joker <= player_list_length + 1:
                     computer_pointer = random.randrange(1, 4)
                     if computer_pointer == 1:
                         print(f"조커가 멈췄습니다! {player_list[next_joker]['player_name']}님의 치사량이 '1' 줄어듦니다")
@@ -184,55 +187,123 @@ def russian_roulette():
                 print('다시입력합시다!')
 
 
-def UpDownGame():
-    tester = player_list[random.randrange(0, len(player_list))]
+def UpDownGame(playerName):
+    last_title = Figlet(font='slant')
+    print(last_title.renderText('PL\n       Up and Down'))
+
     titles = []
     url = "https://www.premierleague.com/tables"
     response = requests.get(url)
     soup = bs(response.text, "html.parser")
     result = soup.select(".league-table__team-name.league-table__team-name--long.long")
-    print(f"23/24 시즌 1월 7일 기준 PL 순위를 맞춰보자 ! \n 출제자는 {tester['player_name']}입니다!")
+    print("23/24 시즌 1월 7일 기준 PL 순위를 맞춰보자 !")
     for i in range(20):
         titles.append(result[i].getText())
     totalNum = 20
-    title_answer = titles[random.randint(0, totalNum - 1)]
-    player_num = 4
+    guess_order = 0
+    if (playerName == player_name):
+        random_numbers = random.sample(range(20), 5)
+        for i in range(5):
+            print(i + 1, ". " + titles[random_numbers[i]])
 
-    now = 1
-    startPoint = 1
-    endPoint = 20
-    print(title_answer + "의 등수를 맞춰보자 !")
-    while now < player_num:
-        now = now + 1
-        guess_order = random.randint(startPoint, endPoint)
-        print(startPoint, endPoint)
-        print("예상하는 등수는?" + str(guess_order))
-        if (guess_order > titles.index(title_answer) + 1):
-            print("Up!")
-            endPoint = guess_order - 1
-        elif guess_order < titles.index(title_answer) + 1:
-            print("Down!")
-            startPoint = guess_order + 1
+        while True:
+            try:
+                number = int(input("1부터 5까지의 숫자를 통해 팀을 고르세요! : "))
+                if number < 1 or number > 5:
+                    print("1부터 5까지의 숫자만 입력해주세요.")
+                else:
+                    break
+            except ValueError:
+                print("숫자를 입력해주세요.")
+
+        teamName = titles[random_numbers[number - 1]]
+        player_num = len(player_list)
+        now = 1
+        startPoint = 1
+        endPoint = 20
+        print(teamName + "의 등수를 맞춰보자 !")
+        while now < player_num:
+            guess_order = random.randint(startPoint, endPoint)
+            print("예상하는 등수는? " + str(guess_order))
+            now = now + 1
+            if (guess_order > titles.index(teamName) + 1):
+                print("Up!")
+                endPoint = guess_order - 1
+            elif guess_order < titles.index(teamName) + 1:
+                print("Down!")
+                startPoint = guess_order + 1
+            else:
+                print("정답!")
+                break
+        if guess_order == titles.index(teamName) + 1 or now < player_num:
+            print("정답을 맞췄다 ! 출제자 두 잔 !\n")
+            for i in player_list:
+                if i['player_name'] == playerName:
+                    i['player_life'] -= 2
+                    i['count'] += 2
         else:
-            print("정답!")
-            break
-
-    if guess_order == titles.index(title_answer) + 1 or now < player_num:
-        tester['player_life'] -= 1
-        tester['count'] += 1
-        for i in player_list:
-            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
+            print("정답을 맞추지 못했다 ! 출제자 제외 한 잔 !\n")
+            for i in player_list:
+                if i['player_name'] != playerName:
+                    i['player_life'] -= 1
+                    i['count'] += 1
     else:
-        for i in player_list:
-            if i['player_name'] != tester['player_name']:
-                i['player_life'] -= 1
-                i['count'] += 1
-        for i in player_list:
-            print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
-        # 나머지가 마신다
+        teamName = titles[random.randint(0, totalNum - 1)]
+        player_num = len(player_list)
+
+        now = 1
+        startPoint = 1
+        endPoint = 20
+        print(teamName + "의 등수를 맞춰보자 !")
+        while now < player_num:
+            if now == 1:
+                now = now + 1
+                guess_order = int(input("예상하는 등수는? "))
+                if (guess_order > titles.index(teamName) + 1):
+                    print("Up!")
+                    endPoint = guess_order - 1
+                elif guess_order < titles.index(teamName) + 1:
+                    print("Down!")
+                    startPoint = guess_order + 1
+                else:
+                    print("정답!")
+                    break
+            else:
+                guess_order = random.randint(startPoint, endPoint)
+                print("예상하는 등수는? " + str(guess_order))
+                now = now + 1
+                if (guess_order > titles.index(teamName) + 1):
+                    print("Up!")
+                    endPoint = guess_order - 1
+                elif guess_order < titles.index(teamName) + 1:
+                    print("Down!")
+                    startPoint = guess_order + 1
+                else:
+                    print("정답!")
+                    break
+        if guess_order == titles.index(teamName) + 1 or now < player_num:
+            print("정답을 맞췄다 ! 출제자 두 잔 !\n")
+
+            for i in player_list:
+                if i['player_name'] == playerName:
+                    i['player_life'] -= 2
+                    i['count'] += 2
+        else:
+            print("정답을 맞추지 못했다 ! 출제자 제외 한 잔 !\n")
+            for i in player_list:
+                if i['player_name'] != playerName:
+                    i['player_life'] -= 1
+                    i['count'] += 1
+
+    for i in player_list:
+        print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
 
 
 def theGameOfDeath():
+    # 타이틀 출력
+    deathgame = Figlet(font='slant')
+    print(deathgame.renderText('The Game\n of death!'))
+
     # 숫자 부를 사람 랜덤으로 정하기
     starter = random.randrange(0, len(player_list))
     player_list_length = len(player_list)
@@ -299,6 +370,114 @@ def theGameOfDeath():
     for i in player_list:
         print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
 
+
+def good_game():
+    good_title = Figlet(font='slant')
+    print(good_title.renderText('Like\n    Game!'))
+    names_list = [person['player_name'] for person in player_list]
+    goodAnswer = ['캌 퉤', '나도 좋아']
+    print('우리 술도 마셨는데 좋아 게임할까?')
+    good_score = [0, 0, 0, 0, 0]
+    lastGame = True
+    while True:
+        game_out = False
+        if lastGame:
+            good_rand = random.randint(0, len(player_list) - 1)
+            myTurn = player_list[good_rand]['player_name']
+        if myTurn != player_name:
+            while True:
+                while True:
+                    yourTurn = player_list[random.randint(0, len(player_list) - 1)]['player_name']
+                    if yourTurn != myTurn:
+                        break
+                if yourTurn != player_name:
+                    print(myTurn, ':', yourTurn, '좋아')
+                    myAnswer = goodAnswer[random.randint(0, 1)]
+                    print('->', yourTurn, ':', myAnswer)
+                    if myAnswer == goodAnswer[0]:
+                        lastGame = False
+                        for i, member in enumerate(player_list):
+                            if member['player_name'] == myTurn:
+                                good_score[i] += 1
+                                if good_score[i] == 3:
+                                    game_out = True
+                                break
+                    elif myAnswer == goodAnswer[1]:
+                        lastGame = True
+                        good_score = [0, 0, 0, 0, 0]
+                        break
+                    if game_out:
+                        break
+                else:
+                    while True:
+                        print(myTurn, ':', yourTurn, '좋아')
+                        myAnswer = input(f'->{yourTurn}: ')
+                        if myAnswer == goodAnswer[0]:
+                            lastGame = False
+                            for i, member in enumerate(player_list):
+                                if member['player_name'] == myTurn:
+                                    good_score[i] += 1
+                                    if good_score[i] == 3:
+                                        game_out = True
+                                    break
+                        elif myAnswer == goodAnswer[1]:
+                            lastGame = True
+                            good_score = [0, 0, 0, 0, 0]
+                            break
+                        else:
+                            print("잘못된 대답입니다. '캌 퉤'와 '나도 좋아' 중에서 선택해주세요.")
+                        if game_out:
+                            break
+                if game_out:
+                    break
+        else:
+            while True:
+                print(myTurn, ':', end=' ')
+                myAnswer = input()
+                yourTurn = ''
+                for j in range(len(myAnswer)):
+                    if myAnswer[j] == ' ':
+                        break
+                    yourTurn += myAnswer[j]
+                if myAnswer != yourTurn + ' 좋아':
+                    print("'OO 좋아'의 형태로 다시 작성하세요")
+                    continue
+                if yourTurn not in names_list:
+                    print('리스트에 없는 이름입니다')
+                    print(' '.join(names_list), '중 다시 입력해주세요')
+                    continue
+                elif yourTurn == player_name:
+                    print('본인은 선택할 수 없습니다 다시 입력해주세요')
+                    break
+                myAnswer = goodAnswer[random.randint(0, 1)]
+                print('->', yourTurn, ':', myAnswer)
+                if myAnswer == goodAnswer[0]:
+                    lastGame = False
+                    for i, member in enumerate(player_list):
+                        if member['player_name'] == myTurn:
+                            good_score[i] += 1
+                            if good_score[i] == 3:
+                                game_out = True
+                            break
+                elif myAnswer == goodAnswer[1]:
+                    lastGame = True
+                    good_score = [0, 0, 0, 0, 0]
+                    break
+                if game_out:
+                    break
+        if game_out:
+            print(f"{player_list[i]['player_name']}이(가) 한 잔 마셔")
+            break
+
+    player_list[i]['player_life'] -= 1
+    player_list[i]['count'] += 1
+
+    print(f"{player_list[i]['player_name']}는 {player_list[i]['player_life']}잔 남았따")
+
+    for i in player_list:
+        print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
+
+
 # 함수명 : baeck_game
 # 전달인자 : 진행중인 순서 i
 # 반환 값 : 없음
@@ -361,11 +540,10 @@ def search_food(food_name):
     for link in links:
         if link.text:
             title = link.text
-            if ("백종원" + food_name ) in title or ('백종원' in title and food_name in title):
+            if ("백종원" + food_name) in title or ('백종원' in title and food_name in title):
                 print(url)
                 print(title)
                 return True
-
 
 
 # 함수명 :  baedck_game_start(foods, i)
@@ -375,7 +553,7 @@ def search_food(food_name):
 #       search_food 에 전달하여 bool 값을 전달 받는다.
 #       있다면 게임오버, 없다면 다음차례로 넘어간다.
 def baeck_game_start(foods, i):
-    game_title = Figlet(font='univers')
+    game_title = Figlet(font='slant')
     print(game_title.renderText("Beack Game!   "))
     print("************************************************************")
     print("*                           RULE                           *")
@@ -405,7 +583,7 @@ def baeck_game_start(foods, i):
                     print("🌶️🌶️ 백종원 %s 있다!🌶️🌶️" % (random_food))
                     print("🥃아 누가누가 술을 마셔 %s이가 술을 마셔 원~~~~ 샷!🥃" % (player_list[turn]["player_name"]))
                     player_list[turn]["player_life"] -= 1  # 해당 순서 플레이어 목숨 하나 제거
-                    player_list[turn]["count"] += 1 # 해당 순서 플레이어 카운트 증가
+                    player_list[turn]["count"] += 1  # 해당 순서 플레이어 카운트 증가
                     return
                 else:
                     print("👏👏 백종원 %s 없어!👏👏" % (random_food))
@@ -414,7 +592,7 @@ def baeck_game_start(foods, i):
                 print("이미 누가 %s  했어!" % (random_food))
                 print("😝아 병x샷! 아 병x샷!😝")
                 player_list[i]["player_life"] -= 1  # 해당 순서 플레이어 목숨 하나 제거
-                player_list[i]["count"] += 1 # 해당 순서 플레이어 카운트 증가
+                player_list[i]["count"] += 1  # 해당 순서 플레이어 카운트 증가
                 return
 
         # player 차례일 때
@@ -425,14 +603,14 @@ def baeck_game_start(foods, i):
                 try:
                     if food == "":
                         raise Exception('입력하지 않았습니다. ')
-                    if ( food not in used_answer):
+                    if (food not in used_answer):
                         used_answer.append(food)
                         print("🔍 백종원 %s  검색중....." % (food))
                         if search_food(food):
                             print("🌶️🌶️ 백종원 %s 있다!🌶️🌶️" % (food))
                             print("🥃아 누가누가 술을 마셔 %s이가 술을 마셔 원~~~~ 샷!🥃" % (player_list[0]['player_name']))
                             player_list[0]["player_life"] -= 1  # 플레이어 목숨 하나 제거
-                            player_list[0]["count"] += 1 # 플레이어 카운트 증가
+                            player_list[0]["count"] += 1  # 플레이어 카운트 증가
                             return
                         else:
                             print("👏👏 백종원 %s 없어!👏👏" % (food))
@@ -457,10 +635,21 @@ def baeck_game_start(foods, i):
                         return
 
 
-
-
 start()
 select_game()
 
 last_title = Figlet(font='slant')
 print(last_title.renderText('Game\n    over!'))
+
+
+
+
+
+
+
+
+
+
+
+
+
