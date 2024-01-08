@@ -95,7 +95,8 @@ def select_game():
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
         try:
-            if i == (0 % (len(player_list) + 1)):
+            # if i == (0 % (len(player_list) + 1)):
+            if i%len(player_list) == 0:
                 select_num = int(
                     input(f"{player_list[i % len(player_list)]['player_name']}이(가) 좋아하는 랜덤 게임~ 랜덤 게임~ 무슨게임? : "))
             else:
@@ -132,7 +133,7 @@ def russian_roulette():
         while (True):
             try:
                 pointer = int(input(f'지목할 사람을 지정하세요 (1 ~ {player_list_length}): '))
-                if 1 <= pointer <= player_list_length:
+                if 1 <= pointer <= len(player_list):
                     break
                 else:
                     print('다시입력합시다!')
@@ -173,13 +174,13 @@ def russian_roulette():
         while (True):
             try:
                 next_joker = int(input('지목자로 선정되셨습니다. 누구를 죽일지(?) 골라보세요. '))
-                if 1 <= next_joker <= player_list_length + 1:
+                if 1 <= next_joker <= len(player_list):
                     computer_pointer = random.randrange(1, 4)
                     if computer_pointer == 1:
-                        print(f"조커가 멈췄습니다! {player_list[next_joker]['player_name']}님의 치사량이 '1' 줄어듭니다")
-                        print("🤑아 누가누가 술을 마셔🤑 👉%s이가👈 술을 마셔 원~~~~ 샷!😛" % (player_list[next_joker]['player_name']))
-                        player_list[next_joker]['player_life'] -= 1
-                        player_list[next_joker]['count'] += 1
+                        print(f"조커가 멈췄습니다! {player_list[next_joker-1]['player_name']}님의 치사량이 '1' 줄어듭니다")
+                        print("🤑아 누가누가 술을 마셔🤑 👉%s이가👈 술을 마셔 원~~~~ 샷!😛" % (player_list[next_joker-1]['player_name']))
+                        player_list[next_joker-1]['player_life'] -= 1
+                        player_list[next_joker-1]['count'] += 1
                         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
                         for i in player_list:
                             print(f"{i['player_name']}의 치사량까지 {i['player_life']} 남았다! (지금까지 {i['count']} 🍺)")
@@ -566,7 +567,7 @@ def search_food(food_name):
         i += 1
 
 
-# 함수명 :  baedck_game_start(foods, i)
+# 함수명 :  baeck_game_start(foods, i)
 # 전달인자 : foods (컴퓨터가 쓸 음식 리스트), i (게임을 부른 사람)
 # 반환 값 : None
 # 기능 : 사용자에게 음식을 입력받고
