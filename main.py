@@ -26,7 +26,7 @@ def start():
         else:
             print('다음에 봐요~')
 
-    player_name = input('오늘 거player_list하게 취해볼 당신의 이름은? : ')
+    player_name = input('오늘 거하게 취해볼 당신의 이름은? : ')
     player_life = 0
     invite_friend = 0
 
@@ -490,6 +490,8 @@ def kimchi_game_start(vegetables, i):
 
 
 def good_game():
+    good_title = Figlet(font='slant')
+    print(good_title.renderText('Like\n    Game!'))
     names_list = [person['player_name'] for person in player_list]
     goodAnswer = ['캌 퉤', '나도 좋아']
     print('우리 술도 마셨는데 좋아 게임할까?')
